@@ -29,14 +29,14 @@ column_list <- grep("\\.([Mm][Ee][Aa][Nn]|[Ss][Tt][Dd])\\.{2}", names(X_test), v
 
 #clean up test data
 test_data <- y_test %>% 
-    merge(activity_labels, by = "activity_id") %>% #get activity names
+    inner_join(activity_labels, by = "activity_id") %>% #get activity names
     bind_cols(subject_test, X_test) %>% #merge with other data
     select(all_of(c(names(subject_test), "activity_name", column_list))) %>% #select only mean+stdev
     rename_with( ~ gsub("\\.","_",gsub("\\.{2,3}","_",gsub("\\.{2}$","",.x)))) #replace dots in colnames with underscores
 
 #clean up train data
 train_data <- y_train %>% 
-    merge(activity_labels, by = "activity_id") %>% #get activity names
+    inner_join(activity_labels, by = "activity_id") %>% #get activity names
     bind_cols(subject_train, X_train) %>% #merge with other data
     select(all_of(c(names(subject_train), "activity_name", column_list))) %>% #select only mean+stdev
     rename_with( ~ gsub("\\.","_",gsub("\\.{2,3}","_",gsub("\\.{2}$","",.x)))) #replace dots in colnames with underscores
@@ -47,4 +47,4 @@ write.table(full_data, "./acc_data/UCI HAR Dataset/combined_data.txt", row.names
 
 #groupdcwec
 grouped_data <- full_data %>% group_by(subject_id, activity_name) %>% summarize_all(mean, na.rm = TRUE)
-write.table(grouped_data, "./acc_data/UCI HAR Dataset/grouped_data.csv", row.names = FALSE)
+write.table(grouped_data, "./acc_data/UCI HAR Dataset/grouped_data.txt", row.names = FALSE)
